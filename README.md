@@ -20,6 +20,7 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 # Or: brew install uv (macOS)
 
 # 2. Install dependencies
+uv venv --python 3.10
 uv sync
 uv sync --extra dev  # Include dev tools
 

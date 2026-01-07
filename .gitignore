@@ -47,5 +47,17 @@ build/
 # Logs
 *.log
 
+# Misc
+.DS_Store
 claude.md
 LEARNING_PLAN.md
+notebooks/
+
+# MLflow
+mlflow.db
+mlruns/
+
+data/*.csv
+data/*.joblib
+data/*.json
+data/*.pkl
