@@ -90,8 +90,8 @@ def train_model(
         )
 
         # save and log feature engineer
-        feature_engineer.save("data/feature_engineer.pkl")
-        mlflow.log_artifact("data/feature_engineer.pkl")
+        feature_engineer.save("data/feature_engineer.joblib")
+        mlflow.log_artifact("data/feature_engineer.joblib")
 
         importance = dict(zip(
             feature_engineer.get_feature_names(),
@@ -113,7 +113,3 @@ if __name__ == "__main__":
     run_id = train_model()
     print(f"MLflow run ID: {run_id}")
     print("View results in MLflow UI by running 'mlflow ui' command and at http://localhost:5000")
-
-
-
-

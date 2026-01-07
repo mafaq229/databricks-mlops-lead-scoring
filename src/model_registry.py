@@ -3,6 +3,7 @@
 import mlflow
 from mlflow import MlflowClient
 
+
 def register_best_model(
     experiment_name: str = "lead_scoring",
     model_name: str = "lead_scoring_model"
