@@ -10,10 +10,11 @@ USAGE:
     python src/data_generator.py
 """
 
-import pandas as pd
-import numpy as np
 from datetime import datetime, timedelta
 from pathlib import Path
+
+import numpy as np
+import pandas as pd
 
 
 def generate_lead_data(n_samples: int = 10000, seed: int = 42) -> pd.DataFrame:
@@ -142,10 +143,10 @@ if __name__ == "__main__":
     print(f"Conversion rate: {df['converted'].mean():.2%}")
     print(f"\nSaved to: {data_dir / 'leads.csv'}")
 
-    print(f"\nFeature distributions:")
+    print("\nFeature distributions:")
     print(f"  - Company size: mean={df['company_size'].mean():.0f}, median={df['company_size'].median():.0f}")
     print(f"  - Engagement score: mean={df['engagement_score'].mean():.1f}")
     print(f"  - Demo requested: {df['demo_requested'].mean():.1%}")
 
-    print(f"\nConversion by lead source:")
+    print("\nConversion by lead source:")
     print(df.groupby('lead_source')['converted'].mean().sort_values(ascending=False).to_string())

@@ -106,7 +106,10 @@ def train_model(
         for name, value in metrics.items():
             print(f"{name}: {value:.4f}")
 
-        return mlflow.active_run().info.run_id
+        active_run = mlflow.active_run()
+        if active_run is None:
+            raise RuntimeError("No active MLflow run found")
+        return active_run.info.run_id
 
 
 if __name__ == "__main__":

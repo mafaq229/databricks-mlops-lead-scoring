@@ -1,7 +1,7 @@
 """Monitoring utilities for lead scoring model."""
 
 from datetime import datetime
-from typing import Dict, List
+from typing import Any, Dict, List
 
 import numpy as np
 import pandas as pd
@@ -121,7 +121,7 @@ class MonitoringDashboard:
 
     def __init__(self, log_path: str = 'data/monitoring_log.csv'):
         self.log_path = log_path
-        self.metrics_history = []
+        self.metrics_history: List[Dict[str, Any]] = []
 
     def log_metrics(self, metrics: Dict):
         """Log metrics with timestamp."""

@@ -6,7 +6,6 @@ and test your monitoring alerts.
 """
 
 import numpy as np
-import pandas as pd
 
 from src.data_generator import generate_drifted_data, generate_lead_data
 from src.monitoring import check_feature_drift

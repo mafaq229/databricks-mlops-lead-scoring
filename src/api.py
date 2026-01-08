@@ -3,7 +3,7 @@
 import sys
 from contextlib import asynccontextmanager
 from datetime import datetime
-from typing import List, Optional
+from typing import List
 
 import mlflow
 import pandas as pd
@@ -37,15 +37,19 @@ async def lifespan(app: FastAPI):
         print(f"Registry load failed ({e}), loading from latest run...")
         client = mlflow.MlflowClient()
         experiment = client.get_experiment_by_name("lead_scoring")
-        runs = client.search_runs(
-            experiment_ids=[experiment.experiment_id],
-            filter_string="status = 'FINISHED'",
-            order_by=["metrics.roc_auc DESC"],
-            max_results=1
-        )
-        if runs:
-            model = mlflow.sklearn.load_model(f"runs:/{runs[0].info.run_id}/lead_scoring_model")
-            print(f"Loaded model from run ID: {runs[0].info.run_id}")
+        if experiment is None:
+            print("Experiment 'lead_scoring' not found")
+            model = None
+        else:
+            runs = client.search_runs(
+                experiment_ids=[experiment.experiment_id],
+                filter_string="status = 'FINISHED'",
+                order_by=["metrics.roc_auc DESC"],
+                max_results=1
+            )
+            if runs:
+                model = mlflow.sklearn.load_model(f"runs:/{runs[0].info.run_id}/lead_scoring_model")
+                print(f"Loaded model from run ID: {runs[0].info.run_id}")
 
     # initialize feature engineer
     feature_engineer = LeadFeatureEngineer().load('data/feature_engineer.joblib')

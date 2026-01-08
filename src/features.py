@@ -20,11 +20,11 @@ USAGE:
     X_new = fe.transform(new_data)
 """
 
-import pandas as pd
-import numpy as np
-from sklearn.preprocessing import StandardScaler, LabelEncoder
 from typing import Dict, List
+
 import joblib
+import pandas as pd
+from sklearn.preprocessing import LabelEncoder, StandardScaler
 
 
 class LeadFeatureEngineer:
@@ -192,8 +192,9 @@ class LeadFeatureEngineer:
 
 if __name__ == "__main__":
     # Demo usage
-    import pandas as pd
     from pathlib import Path
+
+    import pandas as pd
 
     # Load sample data
     data_path = Path(__file__).parent.parent / 'data' / 'leads.csv'
@@ -210,7 +211,7 @@ if __name__ == "__main__":
         print(f"Transformed features: {fe.get_feature_names()}")
         print(f"\nShape: {df.shape} -> {X.shape}")
 
-        print(f"\nSample transformed data:")
+        print("\nSample transformed data:")
         print(X.head())
     else:
         print(f"Data not found at {data_path}")
