@@ -1,110 +1,157 @@
 # Lead Scoring MLOps Project
 
-A complete end-to-end MLOps project demonstrating production ML practices for a lead scoring model.
+A production-ready, end-to-end MLOps system that predicts lead conversion probability. This project demonstrates real-world ML engineering practices: from synthetic data generation and experiment tracking to API serving, monitoring, and CI/CD automation.
 
-## Project Overview
+## 🎯 Project Overview
 
-This project predicts the probability of a sales lead converting into a paying customer. It demonstrates:
+**Business Problem**: Identify high-probability sales leads to optimize sales team efforts and improve ROI.
 
-- **ML Pipeline**: Data processing, feature engineering, model training
-- **Experiment Tracking**: MLflow for tracking experiments and model versioning
-- **Model Serving**: FastAPI REST API for real-time predictions
-- **Monitoring**: Drift detection using PSI and custom metrics
-- **CI/CD**: Automated testing with GitHub Actions
+**Solution**: A machine learning pipeline that scores leads in real-time via a REST API, tracks experiments systematically, monitors data drift, and maintains code quality through automated testing.
 
-## Quick Start
+**Key Features**:
+- ✅ **End-to-End ML Pipeline**: Synthetic data generation → Feature engineering → XGBoost training → REST API serving
+- ✅ **Experiment Tracking**: MLflow integration for reproducible model versioning and model registry
+- ✅ **Production API**: FastAPI with async/lifespan pattern, Pydantic validation, batch prediction support
+- ✅ **Data Drift Detection**: PSI-based monitoring with configurable alert thresholds
+- ✅ **Automated Testing**: Pytest with coverage reporting, type checking with mypy
+- ✅ **CI/CD Pipeline**: GitHub Actions for linting, testing, and type validation
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Python 3.10+
+- `uv` package manager ([install](https://docs.astral.sh/uv/getting-started/installation/))
+
+### Installation & Setup
 
 ```bash
-# 1. Install uv (if not already installed)
-curl -LsSf https://astral.sh/uv/install.sh | sh
-# Or: brew install uv (macOS)
+# 1. Clone and navigate to project
+cd lead_scoring_mlops
 
-# 2. Install dependencies
-uv venv --python 3.10
+# 2. Install dependencies with uv
 uv sync
-uv sync --extra dev  # Include dev tools
+uv sync --extra dev  # Includes pytest, mypy, ruff
 
-# 3. Generate sample data
+# 3. Generate synthetic training data
 uv run python src/data_generator.py
+# Output: data/leads.csv with 10,000 synthetic leads
 
-# 4. Train a model (with MLflow tracking)
+# 4. Train model and track with MLflow
 uv run python src/train_with_mlflow.py
-
-# 5. Start MLflow UI (in separate terminal)
-uv run mlflow ui
-
-# 6. Start the API
-uv run uvicorn src.api:app --reload
-
-# 7. Run tests
-uv run pytest tests/ -v
+# Output: Model registered in MLflow, metrics logged
 ```
 
-## Project Structure
+### Running the API
+
+```bash
+# Terminal 1: Start the FastAPI server
+uv run uvicorn src.api:app --reload --port 8000
+
+# Terminal 2 (optional): Start MLflow UI
+uv run mlflow ui --port 5000
+# View at http://localhost:5000
+```
+
+### Testing the API
+
+```bash
+# Single lead prediction
+curl -X POST "http://localhost:8000/predict" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "lead_id": "LEAD_001",
+    "company_size": 150,
+    "industry": "Technology",
+    "lead_source": "Website",
+    "engagement_score": 75.5,
+    "page_views": 12,
+    "email_opens": 5,
+    "demo_requested": 1
+  }'
+
+# Health check
+curl http://localhost:8000/health
+```
+
+### Running Tests & Quality Checks
+
+```bash
+# Run all tests with coverage
+uv run pytest tests/ -v --cov=src
+
+# Type checking
+uv run mypy src/ --ignore-missing-imports
+
+# Linting
+uv run ruff check src/
+
+# Simulate data drift detection
+uv run python src/simulate_drift.py
+```
+
+## 🔄 Workflow: Training to Serving
+
+```
+1. Data Generation (synthetic, realistic)
+         ↓
+2. Feature Engineering (fit transformers)
+         ↓
+3. Model Training (XGBoost, MLflow tracking)
+         ↓
+4. Model Evaluation (AUC, Precision, Recall)
+         ↓
+5. Register to MLflow (version & stage)
+         ↓
+6. API Server Startup (load model from registry/latest run)
+         ↓
+7. Serve Predictions (REST API)
+         ↓
+8. Monitor (PSI, drift detection)
+         ↓
+9. Retrain if needed (drift detected)
+```
+
+## 📁 Project Structure
 
 ```
 lead_scoring_mlops/
-├── data/                    # Data files (generated)
-├── notebooks/               # Jupyter notebooks for exploration
+├── data/                         # Generated data directory
+│   ├── leads.csv                # Synthetic training data (10k samples)
+│   ├── feature_engineer.joblib  # Fitted feature transformer
+│   └── monitoring_log.csv       # Drift detection history
+│
 ├── src/
-│   ├── data_generator.py    # Generate synthetic lead data
-│   ├── features.py          # Feature engineering pipeline
-│   ├── train_with_mlflow.py # Model training with tracking
-│   ├── api.py               # FastAPI serving endpoint
-│   └── monitoring.py        # Drift detection utilities
-├── tests/                   # Unit tests
-├── configs/                 # Configuration files
-├── scripts/                 # Utility scripts
-└── requirements.txt         # Python dependencies
+│   ├── data_generator.py        # Synthetic data generation (realistic distributions)
+│   ├── features.py              # Feature engineering (consistent train/inference)
+│   ├── train_with_mlflow.py     # Model training with MLflow experiment tracking
+│   ├── api.py                   # FastAPI REST API (async lifespan pattern)
+│   ├── monitoring.py            # PSI-based drift detection
+│   ├── simulate_drift.py        # Generate drifted data for testing
+│   └── register_model.py        # Register trained model to MLflow registry
+│
+├── tests/
+│   ├── test_features.py         # Feature engineering unit tests
+│   ├── test_monitoring.py       # Drift detection tests
+│   └── test_api.py              # API endpoint tests
+│
+├── .github/workflows/
+│   └── ci.yml                   # GitHub Actions CI/CD pipeline
+│
+├── pyproject.toml               # uv project config (Python 3.10, dependencies)
+├── README.md                    # This file
 ```
 
-## Learning Path
+## 🛠 Tech Stack
 
-If you're new to MLOps, follow the [LEARNING_PLAN.md](../LEARNING_PLAN.md) for a step-by-step guide.
-
-## Tech Stack
-
-- **ML**: XGBoost, scikit-learn
-- **Tracking**: MLflow
-- **API**: FastAPI
-- **Monitoring**: Custom PSI implementation
-- **Testing**: pytest
-- **CI/CD**: GitHub Actions
-
-## Key Concepts Demonstrated
-
-### 1. Feature Engineering
-- Consistent transformations between training and inference
-- Feature versioning and reproducibility
-
-### 2. Experiment Tracking
-- Parameter and metric logging
-- Model versioning with MLflow Registry
-
-### 3. Model Serving
-- REST API with FastAPI
-- Input validation with Pydantic
-- Batch and single prediction endpoints
-
-### 4. Monitoring
-- Population Stability Index (PSI) for drift detection
-- Alert thresholds and severity levels
-
-### 5. Testing
-- Unit tests for features and monitoring
-- Automated CI pipeline
-
-## API Endpoints
-
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/` | GET | Health check |
-| `/health` | GET | Detailed health status |
-| `/predict` | POST | Score single lead |
-| `/predict/batch` | POST | Score multiple leads |
-
-## Metrics Tracked
-
-- **Model Performance**: AUC-ROC, Precision, Recall, Brier Score
-- **Drift**: PSI per feature, score distribution shift
-- **Operational**: Latency, throughput, error rate
+| Layer | Technology | Purpose |
+|-------|-----------|---------|
+| **ML** | XGBoost, scikit-learn | Classification model |
+| **Feature Engineering** | pandas, scikit-learn | Data transformation & scaling |
+| **Experiment Tracking** | MLflow | Model versioning & registry |
+| **API** | FastAPI, Pydantic | REST API with async/validation |
+| **Monitoring** | NumPy, pandas | PSI-based drift detection |
+| **Testing** | pytest, coverage | Unit & integration tests |
+| **Type Safety** | mypy | Static type checking |
+| **Linting** | ruff | Code quality |
+| **CI/CD** | GitHub Actions | Automated testing & checks |
+| **Package Manager** | uv | Fast Python dependency management |

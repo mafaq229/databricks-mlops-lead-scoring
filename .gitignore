@@ -52,6 +52,7 @@ build/
 claude.md
 LEARNING_PLAN.md
 notebooks/
+ALTERNATE_LEARNING_PLAN.md
 
 # MLflow
 mlflow.db
