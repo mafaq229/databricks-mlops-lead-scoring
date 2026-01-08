@@ -1,5 +1,5 @@
 import itertools
-from typing import Dict, List, Tuple
+from typing import Dict, List
 
 from src.train_with_mlflow import train_model
 
